@@ -75,11 +75,14 @@
     <!-- which smartspace mode to use by default -->
     <string name="config_default_smartspace_mode" translatable="false">lawnchair</string>
 
+    <string name="config_default_physics_smartspace_mode" translatable="false">physicsWalla</string>
+
     <!-- which time format to use by default on smartspace -->
     <string name="config_default_smartspace_time_format" translatable="false">system</string>
 
     <!-- which hotseat mode to use by default -->
     <string name="config_default_hotseat_mode" translatable="false">lawnchair</string>
+
 
     <bool name="config_default_show_hotseat">true</bool>
     <bool name="config_default_always_reload_icons">true</bool>

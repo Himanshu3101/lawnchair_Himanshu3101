@@ -141,6 +141,7 @@ import java.util.stream.Collectors;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.smartspace.SmartspaceAppWidgetProvider;
 import app.lawnchair.smartspace.model.LawnchairSmartspace;
+import app.lawnchair.smartspace.model.PhysicsWallaSmartspace;
 import app.lawnchair.smartspace.model.SmartspaceMode;
 
 /**
@@ -657,19 +658,27 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, getChildCount());
         // Always add a QSB on the first screen.
         if (mFirstPagePinnedItem == null) {
-            SmartspaceMode smartspaceMode = PreferenceExtensionsKt
-                    .firstBlocking(mPreferenceManager2.getSmartspaceMode());
+            SmartspaceMode smartspaceMode = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getSmartspaceMode());
+            SmartspaceMode smartspaceMode_physics = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getPhysicsMode());
+
             if (!smartspaceMode.isAvailable(this.mLauncher)) {
                 // The current smartspace mode is not available,
                 // setting the smartspace mode to one that is always available
                 smartspaceMode = LawnchairSmartspace.INSTANCE;
                 PreferenceExtensionsKt.setBlocking(mPreferenceManager2.getSmartspaceMode(), smartspaceMode);
             }
+
+            if (!smartspaceMode_physics.isAvailable(this.mLauncher)) {
+                // The current smartspace mode is not available,
+                // setting the smartspace mode to one that is always available
+                smartspaceMode_physics = PhysicsWallaSmartspace.INSTANCE;
+                PreferenceExtensionsKt.setBlocking(mPreferenceManager2.getPhysicsMode(), smartspaceMode_physics);
+            }
             // In transposed layout, we add the QSB in the Grid. As workspace does not touch
             // the
             // edges, we do not need a full width QSB.
             mFirstPagePinnedItem = LayoutInflater.from(getContext())
-                    .inflate(smartspaceMode.getLayoutResourceId(), firstPage, false);
+                .inflate(smartspaceMode_physics.getLayoutResourceId(), firstPage, false);
         }
 
         int cellHSpan = mLauncher.getDeviceProfile().inv.numColumns;

@@ -59,7 +59,6 @@ class LawnchairAppWidgetHostView @JvmOverloads constructor(
     }
 
     companion object {
-
         private val customLayouts = mapOf(
             SmartspaceAppWidgetProvider.componentName to R.layout.smartspace_widget,
         )

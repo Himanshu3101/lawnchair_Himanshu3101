@@ -74,6 +74,7 @@ fun DockPreferences() {
                             adapter = hotseatModeAdapter,
                         )
                         ExpandAndShrink(visible = hotseatModeAdapter.state.value == LawnchairHotseat) {
+//                        ExpandAndShrink(visible = hotseatModeAdapter.state.value == PhysicsWallaHotseat) {
                             DividerColumn {
                                 SwitchPreference(
                                     adapter = prefs2.themedHotseatQsb.getAdapter(),

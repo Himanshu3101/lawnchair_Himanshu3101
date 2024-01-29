@@ -434,6 +434,19 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         onSet = { reloadHelper.recreate() },
     )
 
+    val physicsMode = preference(
+        key = stringPreferencesKey("physicsWalla"),
+        defaultValue = SmartspaceMode.fromString(context.getString(R.string.config_default_physics_smartspace_mode)),
+        parse = { SmartspaceMode.fromString(it) },
+        save = { it.toString() },
+        onSet = { reloadHelper.restart() },
+    )
+
+
+
+
+
+
     val smartspaceModeSelection = preference(
         key = booleanPreferencesKey("smartspace_mode_selection"),
         defaultValue = false,

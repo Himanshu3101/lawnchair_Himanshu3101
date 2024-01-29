@@ -254,6 +254,33 @@ public class QuickstepLauncher extends Launcher {
                 progress -> onTaskbarInAppDisplayProgressUpdate(progress, MINUS_ONE_PAGE_PROGRESS_INDEX));
     }
 
+  /*  @Override
+    protected boolean hasCustomContentToLeft() {
+        return true;
+    }
+
+    @Override
+    protected void addCustomContentToLeft() {
+        View customView = getLayoutInflater().inflate(R.layout.custom, null);
+
+        CustomContentCallbacks callbacks = new CustomContentCallbacks() {
+
+            @Override
+            public void onShow() {}
+
+            @Override
+            public void onScrollProgressChanged(float progress) {}
+
+            @Override
+            public void onHide() {}
+        };
+
+
+        addToCustomContentPage(customView, callbacks, "custom view");
+    }
+*/
+
+
     @Override
     public void logAppLaunch(StatsLogManager statsLogManager, ItemInfo info,
             InstanceId instanceId) {
@@ -1174,7 +1201,7 @@ public class QuickstepLauncher extends Launcher {
      * When Launcher restarts, it sometimes needs to recover to a split selection
      * state.
      * This function checks if such a recovery is needed.
-     * 
+     *
      * @return a boolean representing whether the launcher is waiting to recover to
      *         OverviewSplitSelect state.
      */

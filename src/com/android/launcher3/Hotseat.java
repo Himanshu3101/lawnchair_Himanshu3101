@@ -75,9 +75,11 @@ public class Hotseat extends CellLayout implements Insettable {
         if (!hotseatMode.isAvailable(context)) {
             // The current hotseat mode is not available,
             // setting the hotseat mode to one that is always available
+//            hotseatMode = LawnchairHotseat.INSTANCE;
             hotseatMode = LawnchairHotseat.INSTANCE;
             PreferenceExtensionsKt.setBlocking(preferenceManager2.getHotseatMode(), hotseatMode);
         }
+
         int layoutId = hotseatMode.getLayoutResourceId();
 
         mQsb = LayoutInflater.from(context).inflate(layoutId, this, false);
