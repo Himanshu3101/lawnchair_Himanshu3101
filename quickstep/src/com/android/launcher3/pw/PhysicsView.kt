@@ -75,9 +75,9 @@ class PhysicsView @JvmOverloads constructor(
 //        canvas.drawText("s", rect.centerX(), rect.centerY(), paint2);
 
 
-        /*val path1 = Path()
+        val path1 = Path()
         path1.addRoundRect(RectF(100f, 250f, 950f, 700f), corners, Path.Direction.CW)
-        canvas.drawPath(path1, paint)*/
+        canvas.drawPath(path1, paint)
 
 
 //        (100F, 10F, 100F, 600F, paint);

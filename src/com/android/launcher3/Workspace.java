@@ -658,16 +658,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, getChildCount());
         // Always add a QSB on the first screen.
         if (mFirstPagePinnedItem == null) {
-            SmartspaceMode smartspaceMode = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getSmartspaceMode());
             SmartspaceMode smartspaceMode_physics = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getPhysicsMode());
-
-            if (!smartspaceMode.isAvailable(this.mLauncher)) {
-                // The current smartspace mode is not available,
-                // setting the smartspace mode to one that is always available
-                smartspaceMode = LawnchairSmartspace.INSTANCE;
-                PreferenceExtensionsKt.setBlocking(mPreferenceManager2.getSmartspaceMode(), smartspaceMode);
-            }
-
             if (!smartspaceMode_physics.isAvailable(this.mLauncher)) {
                 // The current smartspace mode is not available,
                 // setting the smartspace mode to one that is always available
@@ -682,7 +673,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         }
 
         int cellHSpan = mLauncher.getDeviceProfile().inv.numColumns;
-        CellLayoutLayoutParams lp = new CellLayoutLayoutParams(0, 0, cellHSpan, 1);
+        CellLayoutLayoutParams lp = new CellLayoutLayoutParams(0, 0, cellHSpan, 3);
         lp.canReorder = false;
         if (!firstPage.addViewToCellLayout(
                 mFirstPagePinnedItem, 0, R.id.search_container_workspace, lp, true)) {
