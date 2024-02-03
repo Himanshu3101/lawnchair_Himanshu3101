@@ -672,7 +672,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         }
 
         int cellHSpan = mLauncher.getDeviceProfile().inv.numColumns;
-        CellLayoutLayoutParams lp = new CellLayoutLayoutParams(0, 0, cellHSpan, 3);
+        CellLayoutLayoutParams lp = new CellLayoutLayoutParams(0, 0, cellHSpan, 4);
         lp.canReorder = false;
         if (!firstPage.addViewToCellLayout(
                 mFirstPagePinnedItem, 0, R.id.search_container_workspace, lp, true)) {
