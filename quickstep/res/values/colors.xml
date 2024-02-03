@@ -92,6 +92,7 @@
     <color name="lottie_yellow400">#fcc934</color>
     <color name="lottie_yellow600">#f9ab00</color>
 
+
     <!-- Turn on work apps button -->
     <color name="work_turn_on_stroke">?attr/colorAccentPrimary</color>
     <color name="work_fab_bg_color">?attr/materialColorPrimaryFixedDim</color>

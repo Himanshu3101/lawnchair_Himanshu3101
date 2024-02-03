@@ -6,12 +6,12 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
-import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.android.launcher3.R
+import com.topjohnwu.superuser.internal.Utils
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -88,18 +88,8 @@ class PhysicsView @JvmOverloads constructor(
         t3D_background_path.addRoundRect(RectF(120f, 270f, 930f, 700f), corners, Path.Direction.CW)
         canvas.drawPath(t3D_background_path, paint)
 
+
         for2ndDataSet(canvas)
-
-
-//        canvas.drawText("s", rect.centerX(), rect.centerY(), paint2);
-
-//        (100F, 10F, 100F, 600F, paint);
-
-//        val centerX = width / 2f
-//        val centerY = height / 2f
-//        val radius = Math.min(centerX, centerY)
-//
-//        canvas.drawCircle(centerX, centerY, radius, paint)
     }
 
     private fun forDateTimeSet(canvas: Canvas) {
@@ -128,20 +118,55 @@ class PhysicsView @JvmOverloads constructor(
         val title_paint = Paint()
         title_paint.textSize = 40f
         title_paint.color = Color.BLUE
-        canvas.drawText("My Space", 220 - title_paint.textSize, 350f, title_paint)
+        canvas.drawText("My Space", 205 - title_paint.textSize, 350f, title_paint)
 
         title_paint.textSize = 46f
         title_paint.color = Color.BLACK
-        canvas.drawText("Today I will study Maths", 350 - title_paint.textSize, 442f, title_paint)
+        canvas.drawText("Today I will study Maths", 310 - title_paint.textSize, 442f, title_paint)
 
         val bitmap = BitmapFactory.decodeResource(resources, R.drawable.target)
-        canvas.drawBitmap(bitmap, null, RectF(200f, 390f, 275f, 460f), null)
+        canvas.drawBitmap(bitmap, null, RectF(160f, 390f, 240f, 460f), null)
 
+        //For Weekdays
+        val centerX = width / 21f
+        val centerY = height / 21f
+        val radius = Math.min(centerX, centerY)
+        title_paint.textSize = 42f
 
+        title_paint.color = ContextCompat.getColor(context, R.color.lottie_green400)
+        canvas.drawCircle(210f, 540f, radius, title_paint)
+        title_paint.color = Color.DKGRAY
+        canvas.drawText("M", 190f, 547f, title_paint);
 
+        title_paint.color = Color.LTGRAY
+        canvas.drawCircle(318f, 540f, radius, title_paint)
+        title_paint.color = Color.DKGRAY
+        canvas.drawText("T", 298f, 547f, title_paint);
 
+        title_paint.color = Color.LTGRAY
+        canvas.drawCircle(426f, 540f, radius, title_paint)
+        title_paint.color = Color.DKGRAY
+        canvas.drawText("W", 406f, 547f, title_paint);
 
+        title_paint.color = Color.LTGRAY
+        canvas.drawCircle(534f, 540f, radius, title_paint)
+        title_paint.color = Color.DKGRAY
+        canvas.drawText("T", 514f, 547f, title_paint);
 
+        title_paint.color = Color.LTGRAY
+        canvas.drawCircle(642f, 540f, radius, title_paint)
+        title_paint.color = Color.DKGRAY
+        canvas.drawText("F", 632f, 547f, title_paint);
+
+        title_paint.color = Color.LTGRAY
+        canvas.drawCircle(750f, 540f, radius, title_paint)
+        title_paint.color = Color.DKGRAY
+        canvas.drawText("S", 730f, 547f, title_paint);
+
+        title_paint.color = Color.LTGRAY
+        canvas.drawCircle(858f, 540f, radius, title_paint)
+        title_paint.color = Color.DKGRAY
+        canvas.drawText("S", 838f, 547f, title_paint);
     }
 }
 
