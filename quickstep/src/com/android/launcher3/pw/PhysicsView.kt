@@ -1,16 +1,23 @@
 package com.android.launcher3.pw
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.Point
 import android.graphics.RectF
+import android.graphics.Region
 import android.util.AttributeSet
+import android.util.Log
+import android.view.MotionEvent
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.android.launcher3.R
+import com.android.quickstep.util.unfold.TAG
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -24,6 +31,11 @@ class PhysicsView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
 
+    private lateinit var dummyPaint: Paint
+    private lateinit var rectanglee: RectF
+    private lateinit var region: Region
+    private lateinit var button: RectF
+    private lateinit var f4h_btn_path: Path
     private lateinit var corners: FloatArray
     private lateinit var day: String
     private var currentTime: String = ""
@@ -85,15 +97,12 @@ class PhysicsView @JvmOverloads constructor(
 
         //For 3rd dialog
         val t3D_background_path = Path()
-
+        t3D_background_path.addRoundRect(RectF(120f, 270f, 930f, 650f), corners, Path.Direction.CW)
         val btnTitlePaint = Paint()
         btnTitlePaint.color = resources.getColor(android.R.color.white)
         btnTitlePaint.style = Paint.Style.FILL
-
-        t3D_background_path.addRoundRect(RectF(120f, 270f, 930f, 650f), corners, Path.Direction.CW)
         canvas.drawPath(t3D_background_path, btnTitlePaint)
-
-        for2ndDataSet(canvas,btnTitlePaint)
+        for2ndDataSet(canvas, btnTitlePaint)
 
 
         //For Button
@@ -103,11 +112,48 @@ class PhysicsView @JvmOverloads constructor(
             150f, 150f,     // Bottom right radius in px
             150f, 150f,      // Bottom left radius in px
         )
-        val F4h_btn_path = Path()
-        F4h_btn_path.addRoundRect(RectF(350f, 970f, 720f, 830f), corners, Path.Direction.CW)
+        f4h_btn_path = Path()
+        button = RectF(350f, 970f, 720f, 830f)
+        f4h_btn_path.addRoundRect(button, corners, Path.Direction.CW)
         btnTitlePaint.color = resources.getColor(android.R.color.white)
-        canvas.drawPath(F4h_btn_path, btnTitlePaint)
+        canvas.drawPath(f4h_btn_path, btnTitlePaint)
         forButtonClick(canvas, btnTitlePaint)
+
+        //For Touch Event
+        val rectF = RectF()
+        f4h_btn_path.computeBounds(rectF, true)
+        region =Region(rectF.left.toInt(),rectF.top.toInt(),rectF.right.toInt(),rectF.bottom.toInt(),)/* Region()*/
+        region.setPath(f4h_btn_path,region)
+        if (this::dummyPaint.isInitialized){
+            canvas.drawRect(rectanglee,dummyPaint)
+        }
+
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        val point = Point()
+        point.x = event!!.x.toInt()
+        point.y = event.y.toInt()
+
+        if (region.contains(point.x as Int, point.y as Int)) {
+            Log.d("xyusz", "Touch IN")
+
+
+            val displayMetrics by lazy { Resources.getSystem().displayMetrics }
+            val deviceWidth by lazy { (displayMetrics.widthPixels).toFloat() }
+            val deviceHeight by lazy { (displayMetrics.heightPixels).toFloat() }
+
+            rectanglee =  RectF(0f, 0f, deviceWidth, deviceHeight)
+            dummyPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                style = Paint.Style.FILL_AND_STROKE
+                color = Color.WHITE
+            }
+        }  else {
+            rectanglee =  RectF(0f, 0f, 0f, 0f)
+            Log.d("xyusz", "Touch OUT")
+        }
+        invalidate()
+        return true;
     }
 
     private fun forDateTimeSet(canvas: Canvas) {
@@ -139,7 +185,12 @@ class PhysicsView @JvmOverloads constructor(
 
         btnTitlePaint.textSize = 46f
         btnTitlePaint.color = Color.BLACK
-        canvas.drawText("Today I will study Maths", 300 - btnTitlePaint.textSize, 442f, btnTitlePaint)
+        canvas.drawText(
+            "Today I will study Maths",
+            300 - btnTitlePaint.textSize,
+            442f,
+            btnTitlePaint,
+        )
 
         val bitmap = BitmapFactory.decodeResource(resources, R.drawable.target)
         canvas.drawBitmap(bitmap, null, RectF(165f, 390f, 235f, 460f), null)
@@ -187,14 +238,14 @@ class PhysicsView @JvmOverloads constructor(
 
 //      For dot(.)
         btnTitlePaint.color = Color.BLUE
-        when(day) {
-            "Sunday" -> canvas.drawCircle(857f, 620f, radius-40, btnTitlePaint)
-            "Monday" -> canvas.drawCircle(211f, 620f, radius-40, btnTitlePaint)
-            "Tuesday" -> canvas.drawCircle(317f, 620f, radius-40, btnTitlePaint)
-            "Wednesday" -> canvas.drawCircle(427f, 620f, radius-40, btnTitlePaint)
-            "Thursday" -> canvas.drawCircle(532f, 620f, radius-40, btnTitlePaint)
-            "Friday" -> canvas.drawCircle(640f, 620f, radius-40, btnTitlePaint)
-            "Saturday" -> canvas.drawCircle(749f, 620f, radius-40, btnTitlePaint)
+        when (day) {
+            "Sunday" -> canvas.drawCircle(857f, 620f, radius - 40, btnTitlePaint)
+            "Monday" -> canvas.drawCircle(211f, 620f, radius - 40, btnTitlePaint)
+            "Tuesday" -> canvas.drawCircle(317f, 620f, radius - 40, btnTitlePaint)
+            "Wednesday" -> canvas.drawCircle(427f, 620f, radius - 40, btnTitlePaint)
+            "Thursday" -> canvas.drawCircle(532f, 620f, radius - 40, btnTitlePaint)
+            "Friday" -> canvas.drawCircle(640f, 620f, radius - 40, btnTitlePaint)
+            "Saturday" -> canvas.drawCircle(749f, 620f, radius - 40, btnTitlePaint)
         }
     }
 
@@ -203,7 +254,5 @@ class PhysicsView @JvmOverloads constructor(
         btnTitlePaint.color = Color.BLUE
         canvas.drawText("Enter", 530 - btnTitlePaint.textSize, 920f, btnTitlePaint)
     }
-
-
 }
 
