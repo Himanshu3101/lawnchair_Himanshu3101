@@ -15,7 +15,6 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -33,10 +32,10 @@ class PhysicsView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
 
+    private lateinit var mTextLayout: StaticLayout
     private lateinit var dummyPaint: Paint
     private lateinit var rectanglee: RectF
     private lateinit var region: Region
-    private lateinit var button: RectF
     private lateinit var f4h_btn_path: Path
     private lateinit var corners: FloatArray
     private lateinit var day: String
@@ -44,6 +43,7 @@ class PhysicsView @JvmOverloads constructor(
     private var minutes: String = "00"
     private var runnable: Runnable
     private var paint: Paint = Paint()
+    var msgShow: String? =  "Don't limit your challenges. Challenge Your LIMITS"
 
     private var validation: Boolean = false
 
@@ -92,17 +92,11 @@ class PhysicsView @JvmOverloads constructor(
         if (!validation) {
             startRunnable()
             validation = true
-            Log.d("xysz", "if Loop")
         }
 
-        Log.d("xysz", "out of Loop")
         //For 2nd dialog
         val S2d_background_path = Path()
-        S2d_background_path.addRoundRect(
-            RectF(100f, 250f, 950f, 900f),
-            corners,
-            Path.Direction.CW,
-        )
+        S2d_background_path.addRoundRect(RectF(100f, 250f, 950f, 900f), corners, Path.Direction.CW,)
         canvas.drawPath(S2d_background_path, paint)
 
         //For 3rd dialog
@@ -124,7 +118,7 @@ class PhysicsView @JvmOverloads constructor(
         forMessageShow(canvas)
 
 
-        //For Button
+        //For Button Desgin
         corners = floatArrayOf(
             150f, 150f,   // Top left radius in px
             150f, 150f,   // Top right radius in px
@@ -132,13 +126,13 @@ class PhysicsView @JvmOverloads constructor(
             150f, 150f,      // Bottom left radius in px
         )
         f4h_btn_path = Path()
-        button = RectF(350f, 970f, 720f, 830f)
-        f4h_btn_path.addRoundRect(button, corners, Path.Direction.CW)
+        f4h_btn_path.addRoundRect(RectF(350f, 970f, 720f, 830f), corners, Path.Direction.CW)
         btnTitlePaint.color = resources.getColor(android.R.color.white)
         canvas.drawPath(f4h_btn_path, btnTitlePaint)
 
-        //4th Button Method
-        forButtonShow(canvas, btnTitlePaint)
+        btnTitlePaint.textSize = 45f
+        btnTitlePaint.color = Color.BLUE
+        canvas.drawText("Enter", 530 - btnTitlePaint.textSize, 920f, btnTitlePaint)
 
         //For Touch Event
         val rectF = RectF()
@@ -159,27 +153,35 @@ class PhysicsView @JvmOverloads constructor(
 
     //For 3rd Method - Message showing
     private fun forMessageShow(canvas: Canvas) {
-        var msgShow: String? = "Hello"
-        //For message update
-        if(minutes == "00"){
-            msgShow = LifeRules.values().toList().shuffled().first().msg
-        }else{
-            msgShow = LifeRules.entries[0].msg
-        }
-
         //Message on Center Paint
         val mTextPaint = TextPaint()
         mTextPaint.textSize = 65f
         mTextPaint.color = Color.DKGRAY
-        val mTextLayout = StaticLayout(
-            msgShow,
-            mTextPaint,
-            canvas.width - 200,
-            Layout.Alignment.ALIGN_CENTER,
-            1.0f,
-            0.0f,
-            false,
-        )
+
+        if(minutes == "00"){
+            msgShow = LifeRules.values().toList().shuffled().first().msg
+
+            mTextLayout = StaticLayout(
+                msgShow,
+                mTextPaint,
+                canvas.width - 200,
+                Layout.Alignment.ALIGN_CENTER,
+                1.0f,
+                0.0f,
+                false,
+            )
+        }else{
+            mTextLayout = StaticLayout(
+                msgShow,
+                mTextPaint,
+                canvas.width - 200,
+                Layout.Alignment.ALIGN_CENTER,
+                1.0f,
+                0.0f,
+                false,
+            )
+        }
+
         canvas.save()
 // calculate x and y position, for text placed
         val textX = 110f
@@ -189,6 +191,7 @@ class PhysicsView @JvmOverloads constructor(
         canvas.restore();
     }
 
+    //message Collection
     enum class LifeRules(val msg: String) {
         Msg1("Don't limit your challenges. Challenge Your LIMITS"),
         Msg2("Do or Die"),
@@ -314,12 +317,6 @@ class PhysicsView @JvmOverloads constructor(
         }
     }
 
-    //4th Button Method
-    private fun forButtonShow(canvas: Canvas, btnTitlePaint: Paint) {
-        btnTitlePaint.textSize = 45f
-        btnTitlePaint.color = Color.BLUE
-        canvas.drawText("Enter", 530 - btnTitlePaint.textSize, 920f, btnTitlePaint)
-    }
 
 
 }
