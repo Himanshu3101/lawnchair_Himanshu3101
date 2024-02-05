@@ -1,5 +1,6 @@
 package com.android.launcher3.pw
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.BitmapFactory
@@ -10,14 +11,15 @@ import android.graphics.Path
 import android.graphics.Point
 import android.graphics.RectF
 import android.graphics.Region
+import android.text.Layout
+import android.text.StaticLayout
+import android.text.TextPaint
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.android.launcher3.R
-import com.android.quickstep.util.unfold.TAG
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -39,6 +41,7 @@ class PhysicsView @JvmOverloads constructor(
     private lateinit var corners: FloatArray
     private lateinit var day: String
     private var currentTime: String = ""
+    private var minutes: String = "00"
     private var runnable: Runnable
     private var paint: Paint = Paint()
 
@@ -53,11 +56,11 @@ class PhysicsView @JvmOverloads constructor(
         runnable = object : Runnable {
             override fun run() {
                 currentTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
-                var sec = 60 - currentTime.substring(6, 8).toInt()
+                var sec = 60000 - (currentTime.substring(6, 8)+"000").toInt()
+                minutes = currentTime.substring(3, 5)
                 currentTime = (currentTime.split(":")[0] + ":" + currentTime.split(":")[1])
+                handler.postDelayed(this, sec.toLong())
                 invalidate()
-//                handler.postDelayed(this, sec.toLong())
-                handler.postDelayed(this, 10000)
             }
         }
     }
@@ -66,6 +69,7 @@ class PhysicsView @JvmOverloads constructor(
         runnable.run()
     }
 
+    @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
@@ -83,26 +87,41 @@ class PhysicsView @JvmOverloads constructor(
         F1t_background_path.addRoundRect(rect, corners, Path.Direction.CW)
         canvas.drawPath(F1t_background_path, paint)
 
-        //For Data set
+        //1st Method - For Data set
         forDateTimeSet(canvas)
         if (!validation) {
-            validation = true
             startRunnable()
+            validation = true
+            Log.d("xysz", "if Loop")
         }
 
+        Log.d("xysz", "out of Loop")
         //For 2nd dialog
         val S2d_background_path = Path()
-        S2d_background_path.addRoundRect(RectF(100f, 250f, 950f, 900f), corners, Path.Direction.CW)
+        S2d_background_path.addRoundRect(
+            RectF(100f, 250f, 950f, 900f),
+            corners,
+            Path.Direction.CW,
+        )
         canvas.drawPath(S2d_background_path, paint)
 
         //For 3rd dialog
         val t3D_background_path = Path()
-        t3D_background_path.addRoundRect(RectF(120f, 270f, 930f, 650f), corners, Path.Direction.CW)
+        t3D_background_path.addRoundRect(
+            RectF(120f, 270f, 930f, 650f),
+            corners,
+            Path.Direction.CW,
+        )
         val btnTitlePaint = Paint()
         btnTitlePaint.color = resources.getColor(android.R.color.white)
         btnTitlePaint.style = Paint.Style.FILL
         canvas.drawPath(t3D_background_path, btnTitlePaint)
-        for2ndDataSet(canvas, btnTitlePaint)
+
+//        2nd Method -
+            for2ndDataSet(canvas, btnTitlePaint)
+
+        //For 3rd Method - Message showing
+        forMessageShow(canvas)
 
 
         //For Button
@@ -117,17 +136,65 @@ class PhysicsView @JvmOverloads constructor(
         f4h_btn_path.addRoundRect(button, corners, Path.Direction.CW)
         btnTitlePaint.color = resources.getColor(android.R.color.white)
         canvas.drawPath(f4h_btn_path, btnTitlePaint)
-        forButtonClick(canvas, btnTitlePaint)
+
+        //4th Button Method
+        forButtonShow(canvas, btnTitlePaint)
 
         //For Touch Event
         val rectF = RectF()
         f4h_btn_path.computeBounds(rectF, true)
-        region =Region(rectF.left.toInt(),rectF.top.toInt(),rectF.right.toInt(),rectF.bottom.toInt(),)/* Region()*/
-        region.setPath(f4h_btn_path,region)
-        if (this::dummyPaint.isInitialized){
-            canvas.drawRect(rectanglee,dummyPaint)
+        region = Region(
+            rectF.left.toInt(),
+            rectF.top.toInt(),
+            rectF.right.toInt(),
+            rectF.bottom.toInt(),
+        )
+        region.setPath(f4h_btn_path, region)
+        if (this::dummyPaint.isInitialized) {
+            canvas.drawRect(rectanglee, dummyPaint)
         }
 
+
+    }
+
+    //For 3rd Method - Message showing
+    private fun forMessageShow(canvas: Canvas) {
+        var msgShow: String? = "Hello"
+        //For message update
+        if(minutes == "00"){
+            msgShow = LifeRules.values().toList().shuffled().first().msg
+        }else{
+            msgShow = LifeRules.entries[0].msg
+        }
+
+        //Message on Center Paint
+        val mTextPaint = TextPaint()
+        mTextPaint.textSize = 65f
+        mTextPaint.color = Color.DKGRAY
+        val mTextLayout = StaticLayout(
+            msgShow,
+            mTextPaint,
+            canvas.width - 200,
+            Layout.Alignment.ALIGN_CENTER,
+            1.0f,
+            0.0f,
+            false,
+        )
+        canvas.save()
+// calculate x and y position, for text placed
+        val textX = 110f
+        val textY = 680f
+        canvas.translate(textX, textY);
+        mTextLayout.draw(canvas);
+        canvas.restore();
+    }
+
+    enum class LifeRules(val msg: String) {
+        Msg1("Don't limit your challenges. Challenge Your LIMITS"),
+        Msg2("Do or Die"),
+        Msg3("Think & Do"),
+        Msg4("Time is Money"),
+        Msg5("Accept Challenges. Live long life");
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -136,26 +203,23 @@ class PhysicsView @JvmOverloads constructor(
         point.y = event.y.toInt()
 
         if (region.contains(point.x as Int, point.y as Int)) {
-            Log.d("xyusz", "Touch IN")
-
-
             val displayMetrics by lazy { Resources.getSystem().displayMetrics }
             val deviceWidth by lazy { (displayMetrics.widthPixels).toFloat() }
             val deviceHeight by lazy { (displayMetrics.heightPixels).toFloat() }
 
-            rectanglee =  RectF(0f, 0f, deviceWidth, deviceHeight)
+            rectanglee = RectF(0f, 0f, deviceWidth, deviceHeight)
             dummyPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 style = Paint.Style.FILL_AND_STROKE
                 color = Color.WHITE
             }
-        }  else {
-            rectanglee =  RectF(0f, 0f, 0f, 0f)
-            Log.d("xyusz", "Touch OUT")
+        } else {
+            rectanglee = RectF(0f, 0f, 0f, 0f)
         }
         invalidate()
         return true;
     }
 
+    //1st Method
     private fun forDateTimeSet(canvas: Canvas) {
         //Time Setup
         val time_date_paint = Paint()
@@ -178,6 +242,7 @@ class PhysicsView @JvmOverloads constructor(
         )
     }
 
+    //2nd Method
     private fun for2ndDataSet(canvas: Canvas, btnTitlePaint: Paint) {
         btnTitlePaint.textSize = 40f
         btnTitlePaint.color = Color.BLUE
@@ -249,10 +314,14 @@ class PhysicsView @JvmOverloads constructor(
         }
     }
 
-    private fun forButtonClick(canvas: Canvas, btnTitlePaint: Paint) {
+    //4th Button Method
+    private fun forButtonShow(canvas: Canvas, btnTitlePaint: Paint) {
         btnTitlePaint.textSize = 45f
         btnTitlePaint.color = Color.BLUE
         canvas.drawText("Enter", 530 - btnTitlePaint.textSize, 920f, btnTitlePaint)
     }
+
+
 }
+
 
